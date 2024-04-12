@@ -1,25 +1,4 @@
-# gbDB PHP Framework v1.0
-
-Dieses Framework ist zur Vereinfachung, einiger PHP Funktionen.<br>
-Der Zweck sit es, dass dieses Framework einnfach ein zu binden sein soll.<br>
-Allgemein werden Alltägliche Funktionen vereinfacht, um sich manch Zeile Code zu sparen.<br>
-<br><u><b>Warung:</b> Dieses Framework wurde in PHP 8.1 geschrieben. Es wurde nicht auf höhere PHP Versionen getestet. Wenn Sie dieses Framework in einer anderen PHP Version verwenden, geben Sie gerne Rückmeldung.</u>
-<br>
-
-<strong>
-
-Der Ordner ```gbdb_framework``` kann ignoriert werden. In diesem befindet sich der unvollständige Code für die nächste Version
-</strong>
-
-<br>
-
-# Einbinden in PHP
-1. Laden Sie sich den Ordner <b>v1.0</b> herunter
-2. Legen Sie den Ordner in die Struktur Ihres PHP Projektes
-3. Binden Sie das Framework in den .php Dateien über ```<?php include 'path/to/gbdb.inc.php'; ?>``` ein
-4. Passen Sie in der Datei ```gbdb.inc.php``` die Variablen an. Es ist alles ausreichend Kommentiert
-
-# Verwendung
+# VERSION 1.0
 
 ## Klasse ```Vars```
 In diser Klasse sind alle Variablen, die Sie selber anpassen können.<br>
