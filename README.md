@@ -3,6 +3,8 @@
 Dieses Framework ist zur Vereinfachung, einiger PHP Funktionen.<br>
 Der Zweck sit es, dass dieses Framework einnfach ein zu binden sein soll.<br>
 Allgemein werden Alltägliche Funktionen vereinfacht, um sich manch Zeile Code zu sparen.<br>
+Für das nächste Update sind Datenbanktechnische Verwendungen von JSON vorgesehen.<br>
+Wenn Sie weitere Ideen oder Ergänzungen haben, dann machen Sie dazu gerne ein ISSUE auf.<br>
 <br><u><b>Warung:</b> Dieses Framework wurde in PHP 8.1 geschrieben. Es wurde nicht auf höhere PHP Versionen getestet. Wenn Sie dieses Framework in einer anderen PHP Version verwenden, geben Sie gerne Rückmeldung.</u>
 <br>
 
