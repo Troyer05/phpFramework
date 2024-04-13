@@ -542,10 +542,10 @@ class SQL {
      * @return mixed die Antwort des SQL Servers / Das Ergebnis der SQL Abfrage
      */
     public static function sendSQL(string $query): mixed {
-        $ergebnis = $pdo->query($sql);
+        $ergebnis = self::$pdo->query($query);
     
         if ($ergebnis) {
-            return $ergebnis;
+            return $ergebnis->fetchAll(PDO::FETCH_ASSOC);
         }
     
         return false;
