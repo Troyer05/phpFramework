@@ -24,7 +24,7 @@
 // Diese wurden in die Datei ausgelagert, damit zukünftige
 // Updates Ihres Frameworks nur noch via COPY & PASTE durchgeführt
 // werden können, ohne dabei alle von Ihnen hesetzten Variablen
-// zu resetten.
+// zu resetten. (Bzw. dass nur die gbdb.php mit der neuen gbdb.php ersetzt werden muss)
 require 'ENV.php';
 
 // ========================================================================================================================================================================================
