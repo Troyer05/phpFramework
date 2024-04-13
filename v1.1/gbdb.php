@@ -129,6 +129,10 @@ class Vars {
 
         return $ip;
     }
+
+    public static function DB_PATH() {
+        return Vars::json_path() . 'GBDB/';
+    }
 }
 
 class FS {
@@ -974,11 +978,6 @@ class Json {
 
 class GBDB {
     /**
-     * @var DB_PATH
-     */
-    public static const DB_PATH = Vars::json_path() . 'GBDB/';
-
-    /**
      * Erstellt den Path zu der Datenabnk / Tabelle
      * @internal Used by Framework
      */
@@ -987,7 +986,7 @@ class GBDB {
         $database = Format::cleanString($database);
 
         $table .= ".json";
-        $database = DB_PATH . $database . "/";
+        $database = DB_PATH() . $database . "/";
         
         return $database . $table;
     }
@@ -1028,8 +1027,8 @@ class GBDB {
     public static function createDatabase(string $name): bool {
         $name = Format::cleanString($name);
 
-        if (!is_dir(DB_PATH . $name)) {
-            mkdir(DB_PATH . $name, 0777);
+        if (!is_dir(DB_PATH() . $name)) {
+            mkdir(DB_PATH() . $name, 0777);
             return true;
         }
 
@@ -1044,8 +1043,8 @@ class GBDB {
     public static function deleteDatabase(string $name): bool {
         $name = Format::cleanString($name);
 
-        if (is_dir(DB_PATH . $name)) {
-            rmdir(DB_PATH . $name);
+        if (is_dir(DB_PATH() . $name)) {
+            rmdir(DB_PATH() . $name);
             return true;
         }
 
@@ -1225,7 +1224,7 @@ class GBDB {
             }
         }
 
-        return $db,
+        return $db;
     }
 
     /**
