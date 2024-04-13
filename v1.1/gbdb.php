@@ -16,124 +16,22 @@
  * 
  * DOKUMENTATION
  * Die Vollständige Dokumentation ist erhältlich unter
- * @link https://github.com/Troyer05/greenbucketFrameWork
+ * @link https://github.com/Troyer05/phpFramework
  * 
 **/
 
-// Hier sind alle Globale Variablen. Diese können nach 
-// Bedarf geändert werden. 
+// In der ENV.php können Sie alle Globalen Variablen setzen. 
+// Diese wurden in die Datei ausgelagert, damit zukünftige
+// Updates Ihres Frameworks nur noch via COPY & PASTE durchgeführt
+// werden können, ohne dabei alle von Ihnen hesetzten Variablen
+// zu resetten.
+require 'ENV.php';
 
-class Vars {
-    public static function __DEV__() {
-        // Entwickler Modus für Entwicklung/Lokale Umgebung. Bei Produktiv Umgebung auf false setzen:
-        return true;
-    }
-
-    // Alle Variablen für die greenbucket API:
-    public static function greenbucket_api_key() {
-        return ""; // greenbucket API Key
-    }
-
-    public static function greenbucket_api_version() {
-        return "v1"; // greenbucket API Version
-    }
-
-    public static function greenbucket_api_url() {
-        return "https://greenbucket.online/API/" . Vars::greenbucket_api_version() . "/api"; // greenbucket API URL
-    }
-
-    // Alle Variablen für JSON Behandlung(en):
-    public static function json_path() {
-        // Wenn Sie einen bestimmten Ordner verwenden um JSON Dateien ab zu legen,
-        // dann können Sie den Path zu diesem Ordner hier einfügen:
-        return ""; // WARNUNG: BITTE DENKEN SIE AN DAS ABSCHLIEßENDE /
-    }
-
-    // Alle SQL Variablen für Produktiv Umgebung:
-    public static function sql_server() {
-        return ""; // SQL Server
-    }
-
-    public static function sql_database() {
-        return ""; // SQL Datenbank
-    }
-
-    public static function sql_user() {
-        return ""; // SQL User
-    }
-
-    public static function sql_password() {
-        return ""; // SQL User-Passwort
-    }
-
-    // Alle SQL Variablen für Entwicklungs/Lokale Umgebung:
-    public static function sql_dev_server() {
-        return ""; // SQL Dev Server
-    }
-
-    public static function sql_dev_database() {
-        return ""; // SQL Dev Datenbank
-    }
-
-    public static function sql_dev_user() {
-        return ""; // SQL Dev User
-    }
-
-    public static function sql_dev_password() {
-        return ""; // SQL Dev User-Passwort
-    }
-
-    // Hier können Sie Cookies hinzufügen, die initial gesetzt werden sollen
-    // WICHTIG: Es dürfen NUR Zahlen unnd Buchstaben verwendet werden für Cookies.
-    // Nicht einmal Leerzeichen sind zulässig.
-    public static function init_cookies() {
-        return array(
-            [
-                "cookie_name" => "TestCookie", // Cookie Name
-                "cookie_value" => "Test1" // Cookie Value
-            ],
-            [
-                "cookie_name" => "Cookie2",
-                "cookie_value" => "Test2"
-            ], // ...
-        );
-    }
-
-    //Hier können Sie Session Variablen hinzufügen, die initial gesetzt werden sollen
-    public static function init_session() {
-        return array(
-            [
-                "session_name" => "Test Session Variable", // Session Variable Name
-                "session_value" => "Test1" // Session variable Value
-            ],
-            [
-                "session_name" => "Test Session Variable 2",
-                "session_value" => "Test 2"
-            ], // ...
-        );
-    }
-
-    // ========================================================================================================================================================================================
-    // AB HIER BEGINNT DAS FRAMEWORK! Bearbeitung auf eigene Gefahr!
-    // Sobald Sie den Code des FrameWorks bearbeiten, verfällt
-    // unser Support für das greenbucket FrameWork.
-    // ========================================================================================================================================================================================
-
-    public static function this_file(): string {
-        return basename($_SERVER['SCRIPT_FILENAME']);
-    }
-
-    public static function client_ip(): string {
-        $ip = $_SERVER['REMOTE_ADDR'];
-        $ip = str_replace(":", "-", $ip);
-
-        return $ip;
-    }
-
-    public static function DB_PATH() {
-        return Vars::json_path() . 'GBDB/';
-    }
-}
+// ========================================================================================================================================================================================
+// AB HIER BEGINNT DAS FRAMEWORK! Bearbeitung auf eigene Gefahr!
+// Sobald Sie den Code des FrameWorks bearbeiten, verfällt
+// unser Support für das greenbucket FrameWork.
+// ========================================================================================================================================================================================
 
 class FS {
     /**
@@ -986,7 +884,7 @@ class GBDB {
         $database = Format::cleanString($database);
 
         $table .= ".json";
-        $database = DB_PATH() . $database . "/";
+        $database = Vars::DB_PATH() . $database . "/";
         
         return $database . $table;
     }
@@ -1026,9 +924,13 @@ class GBDB {
      */
     public static function createDatabase(string $name): bool {
         $name = Format::cleanString($name);
+        
+        if (!is_dir(Vars::DB_PATH())) {
+            mkdir(Vars::DB_PATH(), 0777);
+        }
 
-        if (!is_dir(DB_PATH() . $name)) {
-            mkdir(DB_PATH() . $name, 0777);
+        if (!is_dir(Vars::DB_PATH() . $name)) {
+            mkdir(Vars::DB_PATH() . $name, 0777);
             return true;
         }
 
@@ -1043,8 +945,8 @@ class GBDB {
     public static function deleteDatabase(string $name): bool {
         $name = Format::cleanString($name);
 
-        if (is_dir(DB_PATH() . $name)) {
-            rmdir(DB_PATH() . $name);
+        if (is_dir(Vars::DB_PATH() . $name)) {
+            rmdir(Vars::DB_PATH() . $name);
             return true;
         }
 
@@ -1062,13 +964,20 @@ class GBDB {
         $file = self::makePath($database, $table);
 
         if (!file_exists($file)) {
-            $columns = [];
+            $columns = '[{"id": -1, ';
+            $n = count($cols);
+            $i = 0;
 
             foreach ($cols as $col) {
-                $columns[$col] = "-header-";
+                $columns .= '"' . $col . '": "-header-", ';
             }
 
-            $columns_json = json_encode([$columns]);
+            $columns = rtrim($columns, ', ');
+            $columns .= '}]';
+
+            $columns = json_encode(json_decode($columns), Vars::jpretty());
+
+            // $columns_json = json_encode([$columns]);
             file_put_contents($file, $columns);
 
             return true;
@@ -1109,7 +1018,7 @@ class GBDB {
     
             if (empty($table_data)) {
                 foreach ($data as $key => $value) {
-                    $table_data[0][$key] = "-header-";
+                    $table_data[0][$key] = null;
                 }
             }
     
@@ -1128,7 +1037,7 @@ class GBDB {
             }
     
             $table_data[] = $new_row;
-            $new_data_json = json_encode($table_data);
+            $new_data_json = json_encode($table_data, Vars::jpretty());
 
             file_put_contents($file, $new_data_json);
     
@@ -1156,15 +1065,11 @@ class GBDB {
             if ($r[$where] == $is) {
                 unset($db[$i]);
                 $return = true;
-
-                break;
             }
         }
 
         if ($return) {
-            if (!FS::write_json($file, $db, false)) {
-                $return = false;
-            }
+            file_put_contents($file, json_encode($db, Vars::jpretty()));
         }
 
         return $return;
@@ -1182,26 +1087,27 @@ class GBDB {
     public static function editData(string $database, string $table, mixed $where, mixed $is, mixed $newData): bool {
         $file = self::makePath($database, $table);
         $db = self::ini($file);
-
-        $return = false; 
-
+    
+        $return = false;
+    
         foreach ($db as $i => $r) {
             if ($r[$where] == $is) {
-                $db[$i][$where] = $newData;
+                foreach ($newData as $col => $value) {
+                    if (array_key_exists($col, $db[$i])) {
+                        $db[$i][$col] = $value;
+                    }
+                }
+     
                 $return = true;
-
-                break;
             }
         }
-
+    
         if ($return) {
-            if (!FS::write_json($file, $db, false)) {
-                $return = false;
-            }
+            file_put_contents($file, json_encode($db, Vars::jpretty()));
         }
-
+    
         return $return;
-    }
+    }    
 
     /**
      * Stellt alle Daten aus einer GBDB tabelle bereit
@@ -1222,6 +1128,9 @@ class GBDB {
                     return $db[$i];
                 }
             }
+        } else {
+            unset($db[0]);
+            $db = array_values($db);
         }
 
         return $db;
