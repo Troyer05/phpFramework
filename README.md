@@ -16,7 +16,7 @@ Der Ordner ```gbdb_framework``` kann ignoriert werden. In diesem befindet sich d
 <br>
 
 # Einbinden in PHP
-1. Laden Sie sich den Ordner <b>v1.0</b> herunter
+1. Laden Sie sich den Ordner <b>v1.1</b> herunter
 2. Legen Sie den Ordner in die Struktur Ihres PHP Projektes
 3. Binden Sie das Framework in den .php Dateien über ```<?php include 'path/to/gbdb.inc.php'; ?>``` ein
 4. Passen Sie in der Datei ```gbdb.inc.php``` die Variablen an. Es ist alles ausreichend Kommentiert
@@ -299,6 +299,16 @@ public static function shotString(string $string, int $width = 14, int $shortBy 
 - `$width` (optional, Standard: 14): Die maximale Länge des Strings.
 - `$shortBy` (optional, Standard: 14): Ab welchem Zeichen der String abgeschnitten werden soll.
 
+### `cleanString`
+
+Entfernt alle Charackter aus einem String, die kein Buchstabe und keine Zahl sind
+
+```php
+public static function cleanString(string $string): string
+```
+
+- `$string`: Der zu modifizierende String
+
 ## Beispiel
 
 ```php
@@ -313,6 +323,9 @@ echo $inputTime; // Ausgabe: 14:30:00
 // Abschneiden eines Strings
 $shortString = Format::shotString("Dies ist ein langer Text, der abgeschnitten werden soll.", 20, 15);
 echo $shortString; // Ausgabe: Dies ist ein la....
+
+$cleanedString = Format::cleanString("Hallo 123 Welt!#");
+echo $cleanedString; // Ausgabe: Hallo123Welt
 ```
 
 ---
@@ -483,6 +496,59 @@ public static function sendSQL(string $query): mixed
 
 - `$query` (`string`): Die zu sendende SQL-Abfrage.
 - **Rückgabewert**: Gemischter Datentyp - Die Antwort des SQL-Servers oder das Ergebnis der SQL-Abfrage.
+
+### 'insert'
+
+Fügt neue Datensätze in eine Tabelle ein.
+
+```php
+public static function insert(string $table, array $data): mixed
+```
+
+- `$table` (`string`): Name der Tabelle.
+- `$data` (`array`): Assoziatives Array mit den Daten zum Einfügen.
+- **Rückgabewert**: Gemischter Datentyp - Das Ergebnis des Insert-Befehls.
+
+### 'update'
+
+Aktualisiert vorhandene Datensätze in einer Tabelle.
+
+```php
+public static function update(string $table, array $data, string $where, mixed $is): mixed
+```
+
+- `$table` (`string`): Name der Tabelle.
+- `$data` (`array`): Assoziatives Array mit den neuen Daten.
+- `$where` (`string`): Spalte für die Bedingung.
+- `$is` (`mixed`): Wert für die Bedingung.
+- **Rückgabewert**: Gemischter Datentyp - Das Ergebnis des Update-Befehls.
+
+### 'delete'
+
+Löscht Datensätze aus einer Tabelle.
+
+```php
+public static function delete(string $table, string $where, mixed $is): mixed
+```
+
+- `$table` (`string`): Name der Tabelle.
+- `$where` (`string`): Spalte für die Bedingung.
+- `$is` (`mixed`): Wert für die Bedingung.
+- **Rückgabewert**: Gemischter Datentyp - Das Ergebnis des Delete-Befehls.
+
+### 'select'
+
+Ruft Datensätze aus einer Tabelle ab.
+
+```php
+public static function select(string $table, $select = "*", string $where = "", string $is = ""): mixed
+```
+
+- `$table` (`string`): Name der Tabelle.
+- `$select` (`string`, optional, Standard Wert: *): Welche Spalten selektiert werden sollen
+- `$where` (`string`, optional): Spalte für die Bedingung.
+- `$is` (`string`, optional): Wert für die Bedingung.
+- **Rückgabewert**: Gemischter Datentyp - Die abgerufenen Daten.
 
 ## Eigenschaften
 
@@ -790,3 +856,87 @@ public static function getElement($data, $key)
 ---
 
 Diese Markdown-Dokumentation bietet eine übersichtliche Darstellung der 'Session'- und 'Json'-Klassen sowie ihrer Methoden.
+
+<br>
+
+# Klasse ```GBDB```
+
+Die GBDB-Klasse bietet eine einfache Möglichkeit, mit Datenbanken und Tabellen in Form von JSON-Dateien zu interagieren. Sie ermöglicht das Erstellen, Löschen, Bearbeiten und Abrufen von Datenbanken und Tabellen sowie das Einfügen, Löschen und Abrufen von Daten aus Tabellen.
+
+## Konstanten
+
+- `DB_PATH`: Der Pfad zum Verzeichnis, in dem die JSON-Dateien für die Datenbanken gespeichert werden. Diese Konstante wird durch die Methode `Vars::json_path()` und das Unterverzeichnis `'GBDB/'` definiert.
+
+## Methoden
+
+```php
+public static function makePath(string $database, string $table): string
+```
+
+Diese private statische Methode erstellt den Dateipfad für eine bestimmte Tabelle in einer bestimmten Datenbank. Sie nimmt den Namen der Datenbank und den Namen der Tabelle als Parameter und gibt den entsprechenden Dateipfad zurück.
+
+```php
+public static function genID(string $file): int
+```
+
+Diese private statische Methode generiert eine neue eindeutige ID für einen Datensatz in einer Tabelle. Sie nimmt den Dateipfad der Tabelle als Parameter und gibt die generierte ID zurück.
+
+```php
+public static function ini(string $file): mixed
+```
+
+Diese private statische Methode liest die Daten aus einer JSON-Datei und gibt sie als assoziatives Array zurück. Sie nimmt den Dateipfad der JSON-Datei als Parameter.
+
+```php
+public static function createDatabase(string $name): bool
+```
+
+Diese öffentliche statische Methode erstellt eine neue Datenbank mit dem angegebenen Namen. Sie nimmt den Namen der Datenbank als Parameter und gibt `true` zurück, wenn die Datenbank erfolgreich erstellt wurde, oder `false`, wenn sie bereits existiert.
+
+```php
+public static function deleteDatabase(string $name): bool
+```
+
+Diese öffentliche statische Methode löscht eine Datenbank mit dem angegebenen Namen. Sie nimmt den Namen der Datenbank als Parameter und gibt `true` zurück, wenn die Datenbank erfolgreich gelöscht wurde, oder `false`, wenn sie nicht existiert.
+
+```php
+public static function createTable(string $database, string $table, array $cols): bool
+```
+
+Diese öffentliche statische Methode erstellt eine neue Tabelle mit den angegebenen Spalten für die angegebene Datenbank. Sie nimmt den Namen der Datenbank, den Namen der Tabelle und ein Array von Spaltennamen als Parameter und gibt `true` zurück, wenn die Tabelle erfolgreich erstellt wurde, oder `false`, wenn sie bereits existiert.
+
+```php
+public static function deleteTable(string $database, string $table): bool
+```
+
+Diese öffentliche statische Methode löscht eine Tabelle mit dem angegebenen Namen aus der angegebenen Datenbank. Sie nimmt den Namen der Datenbank und den Namen der Tabelle als Parameter und gibt `true` zurück, wenn die Tabelle erfolgreich gelöscht wurde, oder `false`, wenn sie nicht existiert.
+
+```php
+public static function insertData(string $database, string $table, array $data): bool
+```
+
+Diese öffentliche statische Methode fügt neue Daten in eine Tabelle ein. Sie nimmt den Namen der Datenbank, den Namen der Tabelle und ein Array von Daten als Parameter und gibt `true` zurück, wenn die Daten erfolgreich eingefügt wurden, oder `false`, wenn ein Fehler aufgetreten ist.
+
+```php
+public static function deleteData(string $database, string $table, mixed $where, mixed $is): bool
+```
+
+Diese öffentliche statische Methode löscht Daten aus einer Tabelle basierend auf einem bestimmten Kriterium. Sie nimmt den Namen der Datenbank, den Namen der Tabelle, das zu suchende Kriterium und den Wert des Kriteriums als Parameter und gibt `true` zurück, wenn die Daten erfolgreich gelöscht wurden, oder `false`, wenn ein Fehler aufgetreten ist.
+
+```php
+public static function editData(string $database, string $table, mixed $where, mixed $is, mixed $newData): bool
+```
+
+Diese öffentliche statische Methode bearbeitet vorhandene Daten in einer Tabelle basierend auf einem bestimmten Kriterium. Sie nimmt den Namen der Datenbank, den Namen der Tabelle, das zu suchende Kriterium, den Wert des Kriteriums und die neuen Daten als Parameter und gibt `true` zurück, wenn die Daten erfolgreich bearbeitet wurden, oder `false`, wenn ein Fehler aufgetreten ist.
+
+```php
+public static function getData(string $database, string $table, bool $filter = false, mixed $where = "", mixed $is = ""): mixed
+```
+
+Diese öffentliche statische Methode ruft Daten aus einer Tabelle ab, optional basierend auf einem bestimmten Kriterium. Sie nimmt den Namen der Datenbank, den Namen der Tabelle und optional ein Kriterium und dessen Wert als Parameter und gibt die abgerufenen Daten als Array zurück.
+
+```php
+public static function elementExists(string $database, string $table, mixed $where, mixed $is): bool
+```
+
+Diese öffentliche statische Methode überprüft, ob ein Element mit einem bestimmten Kriterium in einer Tabelle existiert. Sie nimmt den Namen der Datenbank, den Namen der Tabelle, das zu suchende Kriterium und den Wert des Kriteriums als Parameter und gibt `true` zurück, wenn das Element existiert, oder `false`, wenn es nicht existiert.
