@@ -940,3 +940,15 @@ public static function elementExists(string $database, string $table, mixed $whe
 ```
 
 Diese öffentliche statische Methode überprüft, ob ein Element mit einem bestimmten Kriterium in einer Tabelle existiert. Sie nimmt den Namen der Datenbank, den Namen der Tabelle, das zu suchende Kriterium und den Wert des Kriteriums als Parameter und gibt `true` zurück, wenn das Element existiert, oder `false`, wenn es nicht existiert.
+
+```php
+public static function listDBs(): array
+```
+
+Diese öffentliche statische Methode gibt alle vorhandene Datenbanken als ein Array von Strings aus ```["DB1", "DB2"]```
+
+```php
+public static function listTables(string $database): array
+```
+
+Diese öffentliche statische Methode gibt alle vorhandene Tabellen innerhalb einer Datenbank als ein Array von Strings aus ```["Tabelle1", "Tabelle2"]``` Hierbei wird ```$database``` als ```String``` Parameter erwartet.
