@@ -1,0 +1,14 @@
+[
+    {
+        "id": -1,
+        "name": "-header-",
+        "notiz": "-header-",
+        "datum": "-header-"
+    },
+    {
+        "id": 0,
+        "name": "Test Eintrag",
+        "notiz": "Test Notiz",
+        "datum": "23.04.2024"
+    }
+]
