@@ -1,4 +1,4 @@
-# gbDB PHP Framework v1.0
+# gbDB PHP Framework
 
 Dieses Framework ist zur Vereinfachung, einiger PHP Funktionen.<br>
 Der Zweck sit es, dass dieses Framework einnfach ein zu binden sein soll.<br>
