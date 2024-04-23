@@ -16,7 +16,7 @@ Der Ordner ```gbdb_framework``` kann ignoriert werden. In diesem befindet sich d
 <br>
 
 # Einbinden in PHP
-1. Laden Sie sich den Ordner <b>v1.1</b> herunter
+1. Laden Sie sich den aktuellen Versionsordner <b>vx.x</b> herunter
 2. Legen Sie den Ordner in die Struktur Ihres PHP Projektes
 3. Binden Sie das Framework in den .php Dateien über ```<?php include 'path/to/gbdb.inc.php'; ?>``` ein
 4. Passen Sie in der Datei ```gbdb.inc.php``` die Variablen an. Es ist alles ausreichend Kommentiert
