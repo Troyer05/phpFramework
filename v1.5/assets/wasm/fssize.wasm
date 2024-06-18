@@ -1,0 +1,175 @@
+(module
+  (import "js" "log" (func $log (param i32)))
+
+  (func (export "afs") (param f64) (result f64)
+    (local f64 $size)
+    (local f64 $roundedSize)
+    (local i32 $unitIndex)
+    (local f64 $divisor)
+    (local f64 $formattedSize)
+
+    (if (param $value) (then)
+      (local i32 $startIndex)
+      (local i32 $endIndex)
+      (local.get $value)
+
+      (i32.const 0)
+      (call $findFirstDigit)
+
+      (local.set $startIndex)
+      (local.get $startIndex)
+
+      (call $findEndOfNumber)
+
+      (local.set $endIndex)
+      (local.get $value)
+      (local.get $startIndex)
+      (local.get $endIndex)
+
+      (call $extractNumber)
+      (f64.convert_i32_s)
+
+      (local.set $size)
+    )
+
+    (else
+      (f64.convert_i32_s (local.get 0))
+      (local.set $size)
+    )
+
+    (local.get $size)
+    (f64.const 0.5)
+
+    (f64.gt)
+
+    (if (then)
+      (f64.const 1)
+      (f64.add)
+      (local.set $roundedSize)
+      (local.get $roundedSize)
+    )
+
+    (else
+      (local.get $size)
+    )
+
+    (f64.const 1024)
+    (local.set $divisor)
+    (f64.const 0)
+    (local.set $unitIndex)
+
+    (loop
+      (local.get $roundedSize)
+      (local.get $divisor)
+
+      (f64.div)
+      (f64.const 1)
+      (f64.lt)
+
+      (if (then)
+        (br 1)
+
+        (else
+          (local.get $unitIndex)
+          (f64.const 1)
+          (i32.add)
+
+          (local.set $unitIndex)
+          (f64.const 1024)
+
+          (local.get $divisor)
+          (f64.mul)
+
+          (local.set $divisor)
+
+          (br 0)
+        )
+      )
+    )
+
+    (local.get $roundedSize)
+    (local.get $divisor)
+
+    (f64.div)
+
+    (local.set $formattedSize)
+
+    (local.get $formattedSize)
+    (local.get $unitIndex)
+
+    (call $log)
+  )
+
+  (func $findFirstDigit (param $strPtr i32) (result i32)
+    (local i32 $str)
+    (local i32 $char)
+
+    (set_local $str (get_local $strPtr))
+
+    (loop
+      (set_local $char (i32.load8_u (get_local $str)))
+
+      (if (i32.const 48) (i32.const 57) (i32.and) (i32.ne)
+        (then (return (get_local $str)))
+      )
+
+      (set_local $str (i32.add (get_local $str) (i32.const 1)))
+    )
+  )
+
+  (func $findEndOfNumber (param $strPtr i32) (result i32)
+    (local i32 $str)
+    (local i32 $char)
+
+    (set_local $str (get_local $strPtr))
+
+    (loop
+      (set_local $char (i32.load8_u (get_local $str)))
+
+      (if (i32.const 48) (i32.const 57) (i32.and) (i32.eq)
+        (then
+          (set_local $str (i32.add (get_local $str) (i32.const 1)))
+        )
+
+        (else (return (get_local $str)))
+      )
+    )
+  )
+
+  (func $extractNumber (param $strPtr i32) (param $start i32) (param $end i32) (result i32)
+    (local i32 $str)
+    (local i32 $numberPtr)
+    (local i32 $numberLen)
+    (local i32 $number)
+
+    (set_local $str (get_local $strPtr))
+    (set_local $numberPtr (get_local $start))
+    (set_local $numberLen (i32.sub (get_local $end) (get_local $start)))
+    (set_local $number (i32.const 0))
+
+    (some-memory-alloc-function (get_local $numberLen) (set_local $number))
+
+    (block
+      (set_local $str (get_local $numberPtr))
+      (set_local $numberPtr (get_local $number))
+      (set_local $number (i32.const 0))
+
+      (loop
+        (set_local $char (i32.load8_u (get_local $str)))
+
+        (if (i32.const 48) (i32.const 57) (i32.and) (i32.eq)
+          (then
+            (i32.store8 (get_local $numberPtr) (get_local $char))
+            
+            (set_local $numberPtr (i32.add (get_local $numberPtr) (i32.const 1)))
+            (set_local $str (i32.add (get_local $str) (i32.const 1)))
+          )
+
+          (else
+            (return (get_local $number))
+          )
+        )
+      )
+    )
+  )
+)
